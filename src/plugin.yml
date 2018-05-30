@@ -1,0 +1,8 @@
+name: DailyRewards
+main: com.dailyrewards.PluginClass
+description: reward players every day for their activity.
+version: 1.0.1
+commands:
+ dailyreward:
+  description: main command
+  aliases: [dailyrewards, dr, dailybonus, db]

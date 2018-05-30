@@ -1,0 +1,13 @@
+claim-delay-seconds: 10
+streak-reset-after-seconds: 129600
+daily-reward-available-message:
+- '&aHey &e%player%&a, Your daily reward is available now.'
+- '&aType &b/dailybonus &ato collect your bonus.'
+reward-available-check-interval-seconds: 300
+
+# 1 = 1 second
+# 60 = 1 minute
+# 3600 = 1 hour
+# 43200 = 12 hours
+# 86400 = 24 hours
+# 129600 = 36 hours
