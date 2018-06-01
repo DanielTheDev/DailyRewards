@@ -1,9 +1,23 @@
-claim-delay-seconds: 10
+claim-delay-seconds: 86400
 streak-reset-after-seconds: 129600
+reward-finished-message: '&aCome back in &e24 hours &ato claim your next reward.'
 daily-reward-available-message:
 - '&aHey &e%player%&a, Your daily reward is available now.'
 - '&aType &b/dailybonus &ato collect your bonus.'
-reward-available-check-interval-seconds: 300
+daily-reward-message-enabled: true
+reward-animation-present-trail:
+  material: NETHER_STAR
+  display-name: "&a"
+  amount: 1
+  durability: 0
+  glow: false
+reward-animation-present-wrapped:
+  material: END_CRYSTAL
+  display-name: "&5?????"
+  amount: 1
+  durability: 0
+  glow: true
+reward-available-check-interval-seconds: 500
 
 # 1 = 1 second
 # 60 = 1 minute
@@ -11,3 +25,6 @@ reward-available-check-interval-seconds: 300
 # 43200 = 12 hours
 # 86400 = 24 hours
 # 129600 = 36 hours
+
+# /db reload
+# dailyrewards.command.reload

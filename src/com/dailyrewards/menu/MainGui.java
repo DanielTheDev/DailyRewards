@@ -6,36 +6,50 @@ import com.dailyrewards.config.PlayerDataManager;
 import com.dailyrewards.extentions.Chat;
 import com.dailyrewards.extentions.CraftItem;
 import com.dailyrewards.extentions.Gui;
+import com.dailyrewards.extentions.Skull;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
-import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
 
 
 public class MainGui extends Gui {
 
     private final PlayerDataManager manager;
+    private ItemStack skull;
+    private int loading = 0;
     private final PlayerData data;
+    private final CraftItem item = new CraftItem(Material.EYE_OF_ENDER);
+    private BukkitTask animation;
+    private boolean opening;
 
     public MainGui(Player player) {
         super(player, "&f&l--&e&l=&f&l-- &5&lDaily &d&lRewards &f&l--&e&l=&f&l--", 27, true);
         this.manager = PluginClass.getPlugin().getPluginLib().getPlayerDataManager();
         this.data = manager.getPlayer(player);
+        this.skull = new CraftItem(Material.SKULL_ITEM, 1, (short) 3).setDisplayName("&7Loading stats...").build();
+        this.setPlayerStats();
     }
 
-    public void fill(Inventory inventory) {
-        inventory.setItem(13, getChest());
-        inventory.setItem(22, getPlayerStats());
+    public void fill() {
+        inventory.setItem(22, skull);
+        if(!this.opening) inventory.setItem(13, getChest());
+        else {
+            if(loading != 27) loading+=1;
+
+            inventory.setItem(13, item.setDisplayName("Loading "+Chat.percentText("▌", 10, (int) (loading/2.7), '5','d')+"&f "+((27-loading)/10.0)+" seconds").build());
+        }
 
         for(int place = 0; place < this.getSize(); place++) {
-            if(inventory.getItem(place) == null) inventory.setItem(place, new CraftItem(Material.STAINED_GLASS_PANE, 1, (short) (place > 9 && place < 17 ? 6 : 2)).setDisplayName("&a").build());
+            if(!(place == 13 || place == 22))
+                inventory.setItem(place, new CraftItem(Material.STAINED_GLASS_PANE, 1, (short) (place > 9 && place < 17 ? 6 : 2)).setDisplayName("&a").build());
         }
         for(int place : new int[] {0,8,18,26}) {
             inventory.setItem(place, new CraftItem(Material.STAINED_GLASS_PANE, 1, (short) 10).setGlow(true).setDisplayName("&a").build());
@@ -43,21 +57,21 @@ public class MainGui extends Gui {
         this.player.updateInventory();
     }
 
-    public ItemStack getPlayerStats() {
-        int remainingStreakTime = this.data.streakTimeRemaining();
-        Date lastClaimed = this.data.getLastClaimed();
-        Date firstClaimed = this.data.getFirstClaimed();
+    public void setPlayerStats() {
+        Skull.getPlayerSkull(player, item -> {
 
-        return CraftItem.getPlayerSkull(player)
-                .setDisplayName("&6&l" + player.getName()+"'s Stats")
-                .setLore(
-                        "&7Claim Streak&f: "+ this.data.getClaimStreak(),
-                        "&7Streak Remaining Time&f: "+ (remainingStreakTime > 0 ? Chat.timeTranslate(remainingStreakTime) : "none"),
-                        "&7Total Claimed&f: "+ this.data.getTotalClaimed(),
-                        "&7First Claimed&f: "+ (firstClaimed != null ? Chat.timeTranslate((System.currentTimeMillis()-firstClaimed.getTime())/1000) + " ago" : "none"),
-                        "&7Last Claimed&f: "+ (lastClaimed != null ? Chat.timeTranslate((System.currentTimeMillis()-lastClaimed.getTime())/1000) + " ago" : "none")
-                )
-                .build();
+                if(this.skull == null) return;
+
+                this.skull = item.
+                        setDisplayName("&6&l" + player.getName()+"'s Stats")
+                        .setLore(
+                            "&7Claim Streak&f: "+ data.getClaimStreak(),
+                            "&7Streak Remaining Time&f: "+ data.getRemainingTimeFormat(),
+                            "&7Total Claimed&f: "+ data.getTotalClaimed(),
+                            "&7First Claimed&f: "+ data.getFirstClaimedRelative(),
+                            "&7Last Claimed&f: "+ data.getLastClaimedRelative()).build();
+                this.update();
+        });
     }
 
     public ItemStack getChest() {
@@ -66,7 +80,7 @@ public class MainGui extends Gui {
                     .setDisplayName("&aDaily Bonus Reward")
                     .setLore(
                             "&c&m------&6&m------&e&m------&a&m------&b&m------&d&m------",
-                            "&7You daily bonus reward is available",
+                            "&7Your daily bonus reward is available",
                             "&7It contains some magical presents",
                             "&7Open the reward and unwrap the presents.",
                             "",
@@ -101,7 +115,8 @@ public class MainGui extends Gui {
     }
 
     public void claimAnimation() {
-        new BukkitRunnable() {
+        loading = 0;
+        animation = new BukkitRunnable() {
 
             double amount = 0.5;
 
@@ -109,29 +124,44 @@ public class MainGui extends Gui {
             public void run() {
                 if(!player.isOnline()) {
                     this.cancel();
-                    return;
                 } else {
                     if (amount < 2) {
                         player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, (float) 0.75, (float) amount);
                     } else if (amount > 2 && amount < 2.1) {
                         player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_LAUNCH, 1, 1);
-                    } else if (amount > 2.7 && amount < 2.8) {
+                    } else if (amount > 2.3 && amount < 2.4) {
                         player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_BLAST, 1, 1);
-                    } else if (amount > 2.9 && amount < 3) {
+                    } else if (amount > 2.5 && amount < 2.6) {
                         player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_TWINKLE, 1, 1);
-                    } else if (amount > 3.2) {
+                    } else if (amount > 3) {
+                        openPresents();
                         this.cancel();
                         return;
                     }
+                    update();
                     amount += 0.1;
                 }
             }
         }.runTaskTimer(PluginClass.getPlugin(), 0, 2);
     }
 
+    private void openPresents() {
+        if(this.player.isOnline() && PluginClass.getPlugin().getPluginLib().getMenuManager().hasGuiOpen(player))
+        PluginClass.getPlugin().getPluginLib().getMenuManager().switchTo(new RewardGui(player));
+    }
+
+    @Override
+    public void onInventoryClose(InventoryCloseEvent e) {
+        if(this.animation != null) this.animation.cancel();
+        this.skull = null;
+        this.animation = null;
+        super.onInventoryClose(e);
+    }
+
     public void onInventoryClick(InventoryClickEvent e) {
         if(e.getRawSlot() == 13) {
             if(this.data.canClaim()) {
+                this.opening = true;
                 this.data.claim();
                 this.update();
                 this.claimAnimation();

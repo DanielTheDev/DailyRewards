@@ -1,0 +1,65 @@
+rewards:
+  vortex_present:
+    permission: dailyreward.present.vortex
+    reward-commands:
+    - gems add %player% 100
+    reward-item:
+      material: ENDER_CHEST
+      amount: 1
+      durability: 0
+      display-name: '&5&lVortex &d&lPresent'
+      lore:
+      - ''
+      - '&6&lReward:'
+      - '&f- &5?????'
+      - ''
+      - '&eclick to open'
+    opened-item:
+      material: EMERALD
+      durability: 0
+      amount: 1
+      display-name: '&a&l100 Gems'
+      glow: true
+  magical_present:
+    permission: dailyreward.present.magical
+    reward-commands:
+    - gems add %player% 5000
+    reward-item:
+      material: ENDER_CHEST
+      amount: 1
+      glow: true
+      durability: 0
+      display-name: '&3&lVortex &9&lPresent'
+      lore:
+      - ''
+      - '&6&lReward:'
+      - '&f- &5?????'
+      - ''
+      - '&eclick to open'
+    opened-item:
+      material: EMERALD
+      durability: 0
+      amount: 1
+      display-name: '&a&l5000 Gems'
+      glow: true
+  big_present:
+    permission: dailyreward.present.big
+    reward-commands:
+    - gems add %player% 1000
+    reward-item:
+      material: CHEST
+      amount: 1
+      durability: 0
+      display-name: '&2&lBig &a&lPresent'
+      lore:
+      - ''
+      - '&6&lReward:'
+      - '&f- &5?????'
+      - ''
+      - '&eclick to open'
+    opened-item:
+      material: EMERALD
+      durability: 0
+      amount: 1
+      display-name: '&a&l1000 Gems'
+      glow: true

@@ -22,7 +22,7 @@ public interface Initializer<T extends Initializer> {
             field.setAccessible(true);
             try {
                 field.set(instance, null);
-            } catch (Exception e) {}
+            } catch (Exception ignored) {}
         }
     }
 
@@ -36,13 +36,20 @@ public interface Initializer<T extends Initializer> {
 
     static void init(Initializer.Action action, Initializer... listener) {
         for (int x = 0; x < listener.length; x++) {
-            switch (action) {
-                case ENABLE: listener[x].onEnable();
-                    break;
-                case DISABLE: listener[x].onDisable();
-                    break;
-                case RELOAD: listener[x].onReload();
-                    break;
+            try {
+                switch (action) {
+                    case ENABLE:
+                        listener[x].onEnable();
+                        break;
+                    case DISABLE:
+                        listener[x].onDisable();
+                        break;
+                    case RELOAD:
+                        listener[x].onReload();
+                        break;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
@@ -72,7 +79,7 @@ public interface Initializer<T extends Initializer> {
 
     class ValueComparator implements Comparator<Initializer> {
 
-        private Map<Initializer, PluginLib.LoadPriority.Priority> map;
+        private final Map<Initializer, PluginLib.LoadPriority.Priority> map;
 
         public ValueComparator(Map<Initializer, PluginLib.LoadPriority.Priority> map) {
             this.map = map;

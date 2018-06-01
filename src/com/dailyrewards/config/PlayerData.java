@@ -1,6 +1,7 @@
 package com.dailyrewards.config;
 
 import com.dailyrewards.PluginClass;
+import com.dailyrewards.extentions.Chat;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 
@@ -62,7 +63,7 @@ public class PlayerData implements ConfigurationSerializable {
         return totalClaimed;
     }
 
-    public void addTotalClained(int add) {
+    public void addTotalClaimed(int add) {
         this.totalClaimed+=add;
     }
 
@@ -122,6 +123,14 @@ public class PlayerData implements ConfigurationSerializable {
         else return this.timeformat.format(this.firstClaimed);
     }
 
+    public String getFirstClaimedRelative() {
+        return (lastClaimed != null ? Chat.timeTranslate((System.currentTimeMillis()-lastClaimed.getTime())/1000) + " ago" : "none");
+    }
+
+    public String getLastClaimedRelative() {
+        return (lastClaimed != null ? Chat.timeTranslate((System.currentTimeMillis()-lastClaimed.getTime())/1000) + " ago" : "none");
+    }
+
     public String getLastClaimedFormat() {
         if(this.lastClaimed == null) return "none";
         else return this.timeformat.format(this.lastClaimed);
@@ -172,5 +181,10 @@ public class PlayerData implements ConfigurationSerializable {
                 ", lastClaimed=" + lastClaimed +
                 ", firstClaimed=" + firstClaimed +
                 '}';
+    }
+
+    public String getRemainingTimeFormat() {
+        int remainingStreakTime = streakTimeRemaining();
+        return (remainingStreakTime > 0 ? Chat.timeTranslate(remainingStreakTime) : "none");
     }
 }

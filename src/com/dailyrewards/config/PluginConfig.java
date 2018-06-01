@@ -1,31 +1,33 @@
 package com.dailyrewards.config;
 
 import com.dailyrewards.PluginClass;
+import com.dailyrewards.extentions.CraftItem;
 import com.dailyrewards.extentions.Initializer;
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 public class PluginConfig implements Initializer<PluginConfig> {
 
+
+    private final LinkedHashMap<String, Object> defaultValues;
     private int delay;
     private int resetStreak;
     private List<String> rewardMessage;
     private ConfigFile file;
-    private LinkedHashMap<String, Object> defaultValues;
     private int checkInterval;
-
-    public PluginConfig() {
-        this.defaultValues = new LinkedHashMap<>();
-        this.defaultValues.put("claim-delay-seconds", 86400);
-        this.defaultValues.put("streak-reset-after-seconds", 129600);
-        this.defaultValues.put("daily-reward-available-message", Arrays.asList("&aHey &e%player%&a, Your daily reward is available now.","&aType &b/dailybonus &ato collect your bonus."));
-        this.defaultValues.put("reward-available-check-interval-seconds", 500);
-    }
+    private boolean rewardAlert;
+    private CraftItem presentTrail;
+    private CraftItem presentWrapped;
+    private String rewardFinished;
 
     public int getDelay() {
-        return this.delay;
+        return delay;
     }
 
     public int getResetStreak() {
@@ -40,14 +42,45 @@ public class PluginConfig implements Initializer<PluginConfig> {
         return checkInterval;
     }
 
-    public Object getValue(String path, Class<?> c) {
+    public boolean isRewardAlert() {
+        return rewardAlert;
+    }
+
+    public CraftItem getPresentTrail() {
+        return presentTrail;
+    }
+
+    public CraftItem getPresentWrapped() {
+        return presentWrapped;
+    }
+
+    public String getRewardFinished() {
+        return rewardFinished;
+    }
+
+    public PluginConfig() {
+        this.defaultValues = new LinkedHashMap<>();
+        this.defaultValues.put("claim-delay-seconds", 86400);
+        this.defaultValues.put("streak-reset-after-seconds", 129600);
+        this.defaultValues.put("daily-reward-available-message", Arrays.asList("&aHey &e%player%&a, Your daily reward is available now.","&aType &b/dailybonus &ato collect your bonus."));
+        this.defaultValues.put("reward-available-check-interval-seconds", 500);
+        this.defaultValues.put("daily-reward-message-enabled", true);
+        this.defaultValues.put("reward-finished-message", "&aCome back in &e24 hours &ato claim your next reward.");
+    }
+
+    private Object getValue(String path) {
         Object value = this.file.getValue(path);
         if(value == null) {
+
             this.file.setValue(path, this.defaultValues.get(path));
             return this.defaultValues.get(path);
         } else {
             return value;
         }
+    }
+
+    private ConfigurationSection getConfigurationSection(String path) {
+        return this.file.getConfigurationSection(path);
     }
 
     public PluginConfig onEnable() {
@@ -57,10 +90,33 @@ public class PluginConfig implements Initializer<PluginConfig> {
     }
 
     private void init() {
-        this.delay = (int) getValue("claim-delay-seconds", Integer.class);
-        this.resetStreak = (int) getValue("streak-reset-after-seconds", Integer.class);
-        this.rewardMessage = (List<String>) getValue("daily-reward-available-message", List.class);
-        this.checkInterval = (int) getValue("reward-available-check-interval-seconds", Integer.class);
+        this.delay = (int) getValue("claim-delay-seconds");
+        this.resetStreak = (int) getValue("streak-reset-after-seconds");
+        this.rewardMessage = (List<String>) getValue("daily-reward-available-message");
+        this.rewardFinished = (String) getValue("reward-finished-message");
+        this.checkInterval = (int) getValue("reward-available-check-interval-seconds");
+        this.rewardAlert = (boolean) getValue("daily-reward-message-enabled");
+        try {
+            this.presentTrail = CraftItem.fromConfiguration(getConfigurationSection("reward-animation-present-trail"));
+        } catch (Exception e) {
+            try {
+                throw new IOException("Could not load item reward-animation-present-trail: " + e.getMessage());
+            } catch (IOException e1) {
+                this.presentTrail = new CraftItem(Material.NETHER_STAR).setDisplayName("&a");
+                e1.printStackTrace();
+            }
+        }
+        try {
+            this.presentWrapped = CraftItem.fromConfiguration(getConfigurationSection("reward-animation-present-wrapped"));
+        } catch (Exception e) {
+            try {
+                throw new IOException("Could not load item reward-animation-present-wrapped: " + e.getMessage());
+            } catch (IOException e1) {
+                this.presentWrapped = new CraftItem(Material.END_CRYSTAL).setDisplayName("&5?????").setGlow(true);
+                e1.printStackTrace();
+            }
+        }
+
     }
 
     public void onDisable() {

@@ -1,7 +1,10 @@
 package com.dailyrewards.extentions;
 
+import com.dailyrewards.PluginClass;
+import com.dailyrewards.config.PlayerData;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -18,6 +21,27 @@ public class Chat {
         return ChatColor.translateAlternateColorCodes('&', (reset ? "&r" : "") + text);
     }
 
+    public static void sendToConsole(String msg) {
+        PluginClass.getPlugin().getLogger().info(ChatColor.stripColor(toColor(msg)));
+    }
+
+    public static String percentText(String symbol, int max, int current, char color_1, char color_2) {
+        StringBuilder builder = new StringBuilder("&"+color_2);
+        for (int x = 0; x < max; x++) {
+            if(current == x) builder.append("&"+color_1);
+            builder.append(symbol);
+        }
+        return builder.toString();
+    }
+
+    public static void sendMessage(CommandSender sender, String msg) {
+        if(sender instanceof Player) {
+            sender.sendMessage(toColor(msg));
+        } else {
+            Chat.sendToConsole(msg);
+        }
+    }
+
     public static void sendMessage(CommandSender player, List<String> lines, String... replace) {
         for(String line : lines) {
             for (int word = 0; word < replace.length; word+=2) {
@@ -25,6 +49,19 @@ public class Chat {
             }
             player.sendMessage(toColor(line));
         }
+    }
+
+    public static String placeholder(Player player, String line) {
+        PlayerData data = PluginClass.getPlugin().getPluginLib().getPlayerDataManager().getPlayer(player);
+        return line
+                .replace("%player%", player.getName())
+                .replace("%claim-streak%", data.getClaimStreak()+"")
+                .replace("%total-claimed%", data.getTotalClaimed()+"")
+                .replace("%last-claimed%", data.getLastClaimedRelative())
+                .replace("%first-claimed%", data.getFirstClaimedRelative())
+                .replace("%last-claimed-date%", data.getLastClaimedFormat())
+                .replace("%first-claimed-date%", data.getFirstClaimedFormat())
+                .replace("%uuid%", player.getUniqueId().toString());
     }
 
     public static List<String> toColor(String... lines) {

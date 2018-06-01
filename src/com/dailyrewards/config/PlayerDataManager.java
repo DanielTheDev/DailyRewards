@@ -8,8 +8,6 @@ import java.util.UUID;
 
 public class PlayerDataManager {
 
-    private final String PATH = "playerdata";
-
     public PlayerData getPlayer(Player player) {
         return this.getPlayer(player.getUniqueId());
     }
@@ -54,11 +52,11 @@ public class PlayerDataManager {
     }
 
     public boolean exists(UUID uuid) {
-        return new File(PluginClass.getPlugin().getDataFolder(), PATH+"\\"+uuid.toString()+".yml").exists();
+        return new File(PluginClass.getPlugin().getPluginLib().getConfigClass().getPlayerdataFolder(), uuid.toString()+".yml").exists();
     }
 
     private ConfigFile getFile(UUID uuid) {
-        return ConfigFile.getFile(PluginClass.getPlugin(), PATH+"\\"+uuid.toString());
+        return new ConfigFile(PluginClass.getPlugin(), new File(PluginClass.getPlugin().getPluginLib().getConfigClass().getPlayerdataFolder(), uuid.toString()+".yml"));
     }
 
 }

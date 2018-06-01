@@ -3,6 +3,7 @@ package com.dailyrewards.menu;
 
 import com.dailyrewards.extentions.Gui;
 import com.dailyrewards.extentions.Initializer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -14,12 +15,48 @@ import org.bukkit.inventory.Inventory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MenuManager implements Initializer<MenuManager>, Listener {
 
-    private List<Gui> open_guis;
+    private final int[][] map = {
+            {-4,2},{-3,2},{-2,2},{-1,2},{0,2},{1,2},{2,2},{3,2},{4,2},
+            {-4,1},{-3,1},{-2,1},{-1,1},{0,1},{1,1},{2,1},{3,1},{4,1},
+            {-4,0},{-3,0},{-2,0},{-1,0},{0,0},{1,0},{2,0},{3,0},{4,0},
+            {-4,-1},{-3,-1},{-2,-1},{-1,-1},{0,-1},{1,-1},{2,-1},{3,-1},{4,-1},
+            {-4,-2},{-3,-2},{-2,-2},{-1,-2},{0,-2},{1,-2},{2,-2},{3,-2},{4,-2}
+    };
 
-    public void register(Gui gui) {
+    public final List<Gui> open_guis;
+
+    public MenuManager() {
+        this.open_guis = new ArrayList<>();
+    }
+
+
+    public int getSlot(int x, int y) {
+        for (int slot = 0; slot < map.length; slot++) {
+            if(map[slot][0] == x && map[slot][1] == y) return slot;
+        }
+        return -1;
+    }
+
+    public synchronized boolean hasGuiOpen(Player player) {
+        return getOpenGui(player) != null;
+    }
+
+    public synchronized Gui getOpenGui(Player player) {
+        for (int x = 0; x < open_guis.size(); x++) {
+            if(open_guis.get(x).getPlayer().equals(player)) return open_guis.get(x);
+        }
+        return null;
+    }
+
+    public int random(int min, int max) {
+        return ThreadLocalRandom.current().nextInt(min,max+1);
+    }
+
+    public synchronized void register(Gui gui) {
         if(this.open_guis.contains(gui)) {
             try {
                 throw new IOException("Gui already exists in list");
@@ -31,7 +68,16 @@ public class MenuManager implements Initializer<MenuManager>, Listener {
         }
     }
 
-    public void unregister(Gui gui) {
+    public void open(Gui gui) {
+        gui.open();
+    }
+
+    public void switchTo(Gui gui) {
+        gui.getPlayer().closeInventory();
+        gui.open();
+    }
+
+    public synchronized void unregister(Gui gui) {
         if(!this.open_guis.contains(gui)) {
             try {
                 throw new IOException("Gui not exists in list");
@@ -41,26 +87,6 @@ public class MenuManager implements Initializer<MenuManager>, Listener {
         } else {
             this.open_guis.remove(gui);
         }
-    }
-
-    @EventHandler
-    public void onInventoryClick(InventoryClickEvent e){
-        if(exists(e.getInventory())) this.getGui(e.getInventory()).onInventoryClick(e);
-    }
-
-    @EventHandler
-    public void onInventoryClose(InventoryCloseEvent e){
-        if(exists(e.getInventory())) this.getGui(e.getInventory()).onInventoryClose(e);
-    }
-
-    @EventHandler
-    public void onInventoryOpen(InventoryOpenEvent e){
-        if(exists(e.getInventory())) this.getGui(e.getInventory()).onInventoryOpen(e);
-    }
-
-    @EventHandler
-    public void onInventoryDrag(InventoryDragEvent e){
-        if(exists(e.getInventory())) this.getGui(e.getInventory()).onInventoryDrag(e);
     }
 
     public boolean exists(Inventory inv) {
@@ -83,7 +109,7 @@ public class MenuManager implements Initializer<MenuManager>, Listener {
 
 
     public MenuManager onEnable() {
-        this.open_guis = new ArrayList<>();
+        this.open_guis.clear();
         return this;
     }
 
@@ -94,7 +120,6 @@ public class MenuManager implements Initializer<MenuManager>, Listener {
             }
             open_guis.clear();
         }
-        this.open_guis = null;
     }
 
     public void onReload() {
@@ -102,4 +127,23 @@ public class MenuManager implements Initializer<MenuManager>, Listener {
         this.onEnable();
     }
 
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent e){
+        if(exists(e.getInventory())) this.getGui(e.getInventory()).onInventoryClick(e);
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent e){
+        if(exists(e.getInventory())) this.getGui(e.getInventory()).onInventoryClose(e);
+    }
+
+    @EventHandler
+    public void onInventoryOpen(InventoryOpenEvent e){
+        if(exists(e.getInventory())) this.getGui(e.getInventory()).onInventoryOpen(e);
+    }
+
+    @EventHandler
+    public void onInventoryDrag(InventoryDragEvent e){
+        if(exists(e.getInventory())) this.getGui(e.getInventory()).onInventoryDrag(e);
+    }
 }

@@ -27,7 +27,7 @@ public class NotifyTimer extends BukkitRunnable implements Initializer<NotifyTim
     }
 
     public void alert(Player player) {
-        Chat.sendMessage(player, PluginClass.getPluginConfig().getRewardMessage(), "%player%", player.getName());
+        if(PluginClass.getPluginConfig().isRewardAlert()) Chat.sendMessage(player, PluginClass.getPluginConfig().getRewardMessage(), "%player%", player.getName());
     }
 
     @Override
@@ -40,7 +40,7 @@ public class NotifyTimer extends BukkitRunnable implements Initializer<NotifyTim
 
     @Override
     public void onDisable() {
-        this.task.cancel();
+        if(this.task != null) this.task.cancel();
         Initializer.unload(this);
     }
 

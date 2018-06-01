@@ -1,7 +1,9 @@
 package com.dailyrewards.extentions;
 
+import com.dailyrewards.PluginClass;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -9,20 +11,27 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.MaterialData;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class CraftItem {
 
-    private ItemStack item;
-    private ItemMeta meta;
+    private final ItemStack item;
+    private final ItemMeta meta;
     private boolean glow;
 
     public CraftItem(ItemStack item) {
         this.item = item;
         this.meta = item.getItemMeta();
+    }
+
+    public CraftItem() {
+        this(Material.STONE, 1);
     }
 
     public CraftItem(Material material) {
@@ -165,7 +174,7 @@ public class CraftItem {
     }
 
     public CraftItem setDisplayName(String name) {
-        this.meta.setDisplayName(Chat.toColor(name));
+        this.meta.setDisplayName(Chat.toColor("&r"+name));
         return this.buildMeta();
     }
 
@@ -195,12 +204,28 @@ public class CraftItem {
         return this;
     }
 
-    public static CraftItem getPlayerSkull(Player player) {
-        CraftItem item = new CraftItem(Material.SKULL_ITEM, 1, (short) SkullType.PLAYER.ordinal());
-        SkullMeta meta = (SkullMeta) item.getRawMeta();
-        meta.setOwner(player.getName());
-        item.setRawMeta(meta);
+
+
+    public static CraftItem fromConfiguration(ConfigurationSection section) throws Exception {
+        List<String> attributes = new ArrayList<>(section.getKeys(false));
+        CraftItem item = new CraftItem();
+        if(attributes.contains("glow") && section.isBoolean("glow")) item.setGlow(section.getBoolean("glow"));
+        if(attributes.contains("material") && section.isString("material")) item.setType(Material.valueOf(section.getString("material")));
+        else throw new IOException(section.getCurrentPath()+".material value missing.");
+        if(attributes.contains("durability") && section.isInt("durability")) item.setDurability((short) section.getInt("durability"));
+        if(attributes.contains("amount") && section.isInt("amount")) item.setAmount(section.getInt("amount"));
+        if(attributes.contains("display-name") && section.isString("display-name")) item.setDisplayName(section.getString("display-name"));
+        if(attributes.contains("lore") && section.isList("lore")) item.setLore(section.getStringList("lore"));
         return item;
+    }
+
+    @Override
+    public String toString() {
+        return "CraftItem{" +
+                "item=" + item +
+                ", meta=" + meta +
+                ", glow=" + glow +
+                '}';
     }
 
 }

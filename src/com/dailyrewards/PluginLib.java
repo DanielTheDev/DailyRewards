@@ -4,6 +4,7 @@ import com.dailyrewards.command.CommandManager;
 import com.dailyrewards.config.ConfigFile;
 import com.dailyrewards.config.PlayerDataManager;
 import com.dailyrewards.config.PluginConfig;
+import com.dailyrewards.config.RewardConfig;
 import com.dailyrewards.extentions.Initializer;
 import com.dailyrewards.menu.MenuManager;
 import com.dailyrewards.timers.NotifyTimer;
@@ -25,6 +26,7 @@ public class PluginLib implements Initializer<PluginLib> {
     private MenuManager menuManager;
     private CommandManager commandManager;
     private PluginConfig pluginConfig;
+    private RewardConfig rewardConfig;
     private NotifyTimer notifyTimer;
 
     public MenuManager getMenuManager() {
@@ -53,6 +55,7 @@ public class PluginLib implements Initializer<PluginLib> {
         this.menuManager = new MenuManager();
         this.subclass_Config = new Config();
         this.pluginConfig = new PluginConfig();
+        this.rewardConfig = new RewardConfig();
         this.notifyTimer = new NotifyTimer();
         Initializer.init(Action.ENABLE, Initializer.getInitializerFields(this));
         return this;
@@ -68,12 +71,21 @@ public class PluginLib implements Initializer<PluginLib> {
         this.onEnable();
     }
 
+    public RewardConfig getRewardConfig() {
+        return this.rewardConfig;
+    }
+
     public class Config implements Initializer<Config> {
 
         private LinkedHashMap<String, ConfigFile> files;
+        private File playerdataFolder;
 
         public ConfigFile getConfig(String name) {
             return files.get(name);
+        }
+
+        public File getPlayerdataFolder() {
+            return playerdataFolder;
         }
 
         public void registerFile(Plugin plugin, String name) {
@@ -112,9 +124,11 @@ public class PluginLib implements Initializer<PluginLib> {
         public void registerFiles() {
             this.setFolders();
             this.registerFile(PluginClass.getPlugin(), "config");
+            this.registerFile(PluginClass.getPlugin(), "rewards");
         }
         public void setFolders() {
-            new File(PluginClass.getPlugin().getDataFolder(), "playerdata").mkdirs();
+            this.playerdataFolder = new File(PluginClass.getPlugin().getDataFolder(), "playerdata");
+            this.playerdataFolder.mkdirs();
         }
 
 
@@ -137,7 +151,7 @@ public class PluginLib implements Initializer<PluginLib> {
         enum Priority {
             LOW(1), MEDIUM(2), HIGH(3);
 
-            private int type;
+            private final int type;
 
             Priority(int type) {
                 this.type = type;

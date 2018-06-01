@@ -1,5 +1,6 @@
 package com.dailyrewards.config;
 
+import com.dailyrewards.PluginClass;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -19,13 +20,10 @@ public class ConfigFile {
     private String name;
     private boolean fromJar;
 
-    public static final char PATH_SEPARATOR = '.';
-
-    private ConfigFile() {}
 
     public ConfigFile(Plugin plugin, String name, boolean fromJar) {
         if(name.endsWith(".yml")) try {
-            throw new IOException("File cannot contain extention. (Only name required)");
+            throw new IOException("File cannot contain extension. (Only name required)");
         } catch (IOException e) {
             e.printStackTrace();
         } else {
@@ -33,12 +31,26 @@ public class ConfigFile {
             this.name = name;
             this.file = new File(plugin.getDataFolder(), name+".yml");
         }
-
     }
+
+    public ConfigFile(Plugin plugin, File file) {
+        if(!file.getName().endsWith(".yml")) try {
+            throw new IOException("File must be yml file");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } else {
+            this.fromJar = false;
+            this.name = file.getName().replace(".yml", "");
+            this.file = file;
+        }
+    }
+
 
     public static ConfigFile getFile(Plugin plugin, String name) {
        return new ConfigFile(plugin, name, false);
     }
+
+
 
     public boolean isFromJar() {
         return fromJar;
@@ -142,7 +154,7 @@ public class ConfigFile {
             os = new FileOutputStream(destination);
 
             byte[] buffer = new byte[1024];
-            int i = 0;
+            int i;
             while((i = is.read(buffer)) != -1) {
                 os.write(buffer, 0, i);
             }
@@ -158,7 +170,7 @@ public class ConfigFile {
                 if (os != null) {
                     os.close();
                 }
-            } catch (IOException e) {}
+            } catch (IOException ignored) {}
         }
         return true;
     }

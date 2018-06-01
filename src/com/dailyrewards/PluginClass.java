@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class PluginClass extends JavaPlugin {
 
     private static PluginClass plugin;
@@ -20,6 +21,7 @@ public class PluginClass extends JavaPlugin {
     public static PluginClass getPlugin() {
         return plugin;
     }
+
 
     public PluginLib getPluginLib() {
         return this.pluginLib;
@@ -35,7 +37,7 @@ public class PluginClass extends JavaPlugin {
         this.registerInitializer(this.pluginLib = new PluginLib());
         this.init(Initializer.Action.ENABLE);
         this.registerListeners();
-        this.registerSeriableObject();
+        this.registerSerializableObject();
         this.registerCommands();
     }
 
@@ -70,11 +72,12 @@ public class PluginClass extends JavaPlugin {
 
     public void registerListeners() {
         Bukkit.getServer().getPluginManager().registerEvents(this.getPluginLib().getMenuManager(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new Events(), this);
     }
 
 
 
-    public void registerSeriableObject() {
+    public void registerSerializableObject() {
         ConfigurationSerialization.registerClass(PlayerData.class);
     }
 
