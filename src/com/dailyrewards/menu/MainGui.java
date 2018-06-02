@@ -2,7 +2,6 @@ package com.dailyrewards.menu;
 
 import com.dailyrewards.PluginClass;
 import com.dailyrewards.config.PlayerData;
-import com.dailyrewards.config.PlayerDataManager;
 import com.dailyrewards.extentions.Chat;
 import com.dailyrewards.extentions.CraftItem;
 import com.dailyrewards.extentions.Gui;
@@ -24,8 +23,6 @@ import java.util.concurrent.ThreadLocalRandom;
 public final class MainGui extends Gui {
 
 
-    private final PlayerDataManager manager;
-
     private int loading = 0;
     private final PlayerData data;
     private CraftItem skull = new CraftItem(Material.SKULL_ITEM, 1, (short) 3).setDisplayName("&7Loading stats...");
@@ -37,8 +34,7 @@ public final class MainGui extends Gui {
 
     public MainGui(Player player) {
         super(player, "&f&l--&e&l=&f&l-- &5&lDaily &d&lRewards &f&l--&e&l=&f&l--", 27, true);
-        this.manager = PluginClass.getPlugin().getPluginLib().getPlayerDataManager();
-        this.data = manager.getPlayer(player);
+        this.data = PluginClass.getPlugin().getPluginLib().getPlayerDataManager().getPlayer(player);
         this.setPlayerStats();
     }
 
@@ -179,7 +175,7 @@ public final class MainGui extends Gui {
             } else {
                 this.player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, (float) 0.7, (float) 0.6);
             }
-            } else if (e.getRawSlot() == 22) {
+        } else if (e.getRawSlot() == 22) {
             this.player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_HURT, 2, (float) ThreadLocalRandom.current().nextDouble(0.5, 2));
         } else if (e.getRawSlot() < 27) {
             int random = ThreadLocalRandom.current().nextInt(4);

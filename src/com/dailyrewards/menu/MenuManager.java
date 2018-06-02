@@ -18,46 +18,47 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MenuManager implements Initializer<MenuManager>, Listener {
-
+    private final List<Gui> open_guis;
     private final int[][] map = {
-            {-4,2},{-3,2},{-2,2},{-1,2},{0,2},{1,2},{2,2},{3,2},{4,2},
-            {-4,1},{-3,1},{-2,1},{-1,1},{0,1},{1,1},{2,1},{3,1},{4,1},
-            {-4,0},{-3,0},{-2,0},{-1,0},{0,0},{1,0},{2,0},{3,0},{4,0},
-            {-4,-1},{-3,-1},{-2,-1},{-1,-1},{0,-1},{1,-1},{2,-1},{3,-1},{4,-1},
-            {-4,-2},{-3,-2},{-2,-2},{-1,-2},{0,-2},{1,-2},{2,-2},{3,-2},{4,-2}
-    };
+            {-4, 2}, {-3, 2}, {-2, 2}, {-1, 2}, {0, 2}, {1, 2}, {2, 2}, {3, 2}, {4, 2},
+            {-4, 1}, {-3, 1}, {-2, 1}, {-1, 1}, {0, 1}, {1, 1}, {2, 1}, {3, 1}, {4, 1},
+            {-4, 0}, {-3, 0}, {-2, 0}, {-1, 0}, {0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0},
+            {-4, -1}, {-3, -1}, {-2, -1}, {-1, -1}, {0, -1}, {1, -1}, {2, -1}, {3, -1}, {4, -1},
+            {-4, -2}, {-3, -2}, {-2, -2}, {-1, -2}, {0, -2}, {1, -2}, {2, -2}, {3, -2}, {4, -2}};
 
-    public final List<Gui> open_guis;
 
     public MenuManager() {
         this.open_guis = new ArrayList<>();
     }
 
+    public List<Gui> getOpen_guis() {
+        return this.open_guis;
+    }
 
     public int getSlot(int x, int y) {
         for (int slot = 0; slot < map.length; slot++) {
-            if(map[slot][0] == x && map[slot][1] == y) return slot;
+            if (map[slot][0] == x && map[slot][1] == y) return slot;
         }
         return -1;
     }
 
-    public synchronized boolean hasGuiOpen(Player player) {
+    public boolean hasGuiOpen(Player player) {
         return getOpenGui(player) != null;
     }
 
-    public synchronized Gui getOpenGui(Player player) {
+    public Gui getOpenGui(Player player) {
         for (int x = 0; x < open_guis.size(); x++) {
-            if(open_guis.get(x).getPlayer().equals(player)) return open_guis.get(x);
+            if (open_guis.get(x).getPlayer().equals(player)) return open_guis.get(x);
         }
         return null;
     }
 
     public int random(int min, int max) {
-        return ThreadLocalRandom.current().nextInt(min,max+1);
+        return ThreadLocalRandom.current().nextInt(min, max + 1);
     }
 
-    public synchronized void register(Gui gui) {
-        if(this.open_guis.contains(gui)) {
+    public void register(Gui gui) {
+        if (this.open_guis.contains(gui)) {
             try {
                 throw new IOException("Gui already exists in list");
             } catch (IOException e) {
@@ -69,19 +70,19 @@ public class MenuManager implements Initializer<MenuManager>, Listener {
     }
 
     public void open(Gui gui) {
-        if(!this.hasGuiOpen(gui.getPlayer())) gui.open();
+        if (!this.hasGuiOpen(gui.getPlayer())) gui.open();
     }
 
     public void switchTo(Gui gui) {
         Gui oldGui = this.getOpenGui(gui.getPlayer());
-        if(oldGui != null && oldGui.getClass() != gui.getClass()) {
+        if (oldGui != null && oldGui.getClass() != gui.getClass()) {
             gui.getPlayer().closeInventory();
             gui.open();
         }
     }
 
-    public synchronized void unregister(Gui gui) {
-        if(!this.open_guis.contains(gui)) {
+    public void unregister(Gui gui) {
+        if (!this.open_guis.contains(gui)) {
             try {
                 throw new IOException("Gui not exists in list");
             } catch (IOException e) {
@@ -96,7 +97,7 @@ public class MenuManager implements Initializer<MenuManager>, Listener {
         Gui gui;
         for (int x = 0; x < this.open_guis.size(); x++) {
             gui = this.open_guis.get(x);
-            if(gui.equals(inv.getHolder())) return true;
+            if (gui.equals(inv.getHolder())) return true;
         }
         return false;
     }
@@ -104,8 +105,8 @@ public class MenuManager implements Initializer<MenuManager>, Listener {
     public Gui getGui(Inventory inv) {
         Gui gui;
         for (int x = 0; x < this.open_guis.size(); x++) {
-            gui = this.open_guis.get(x);;
-            if(gui.equals(inv.getHolder())) return gui;
+            gui = this.open_guis.get(x);
+            if (gui.equals(inv.getHolder())) return gui;
         }
         return null;
     }
@@ -117,12 +118,10 @@ public class MenuManager implements Initializer<MenuManager>, Listener {
     }
 
     public void onDisable() {
-        if(open_guis != null) {
-            for (int x = 0; x < open_guis.size(); x++) {
-                open_guis.get(x).close();
-            }
-            open_guis.clear();
+        for (int x = 0; x < open_guis.size(); x++) {
+            open_guis.get(x).close();
         }
+        open_guis.clear();
     }
 
     public void onReload() {
@@ -131,22 +130,22 @@ public class MenuManager implements Initializer<MenuManager>, Listener {
     }
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent e){
-        if(exists(e.getInventory())) this.getGui(e.getInventory()).onInventoryClick(e);
+    public void onInventoryClick(InventoryClickEvent e) {
+        if (exists(e.getInventory())) this.getGui(e.getInventory()).onInventoryClick(e);
     }
 
     @EventHandler
-    public void onInventoryClose(InventoryCloseEvent e){
-        if(exists(e.getInventory())) this.getGui(e.getInventory()).onInventoryClose(e);
+    public void onInventoryClose(InventoryCloseEvent e) {
+        if (exists(e.getInventory())) this.getGui(e.getInventory()).onInventoryClose(e);
     }
 
     @EventHandler
-    public void onInventoryOpen(InventoryOpenEvent e){
-        if(exists(e.getInventory())) this.getGui(e.getInventory()).onInventoryOpen(e);
+    public void onInventoryOpen(InventoryOpenEvent e) {
+        if (exists(e.getInventory())) this.getGui(e.getInventory()).onInventoryOpen(e);
     }
 
     @EventHandler
-    public void onInventoryDrag(InventoryDragEvent e){
-        if(exists(e.getInventory())) this.getGui(e.getInventory()).onInventoryDrag(e);
+    public void onInventoryDrag(InventoryDragEvent e) {
+        if (exists(e.getInventory())) this.getGui(e.getInventory()).onInventoryDrag(e);
     }
 }

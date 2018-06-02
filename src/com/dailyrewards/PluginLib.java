@@ -33,6 +33,7 @@ public class PluginLib implements Initializer<PluginLib> {
         return menuManager;
     }
 
+
     public Config getConfigClass() {
         return this.subclass_Config;
     }
@@ -82,6 +83,12 @@ public class PluginLib implements Initializer<PluginLib> {
         return this.rewardConfig;
     }
 
+    public void restartTimers() {
+        this.notifyTimer.onDisable();
+        this.notifyTimer = new NotifyTimer();
+        this.notifyTimer.onEnable();
+    }
+
     public class Config implements Initializer<Config> {
 
         private LinkedHashMap<String, ConfigFile> files;
@@ -96,20 +103,20 @@ public class PluginLib implements Initializer<PluginLib> {
         }
 
         public void registerFile(Plugin plugin, String name) {
-            if(this.files.containsKey(name)) {
+            if (this.files.containsKey(name)) {
                 try {
-                    throw new IOException("ConfigFile with that name already exists '"+name+"'");
+                    throw new IOException("ConfigFile with that name already exists '" + name + "'");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else {
-                ConfigFile file = new ConfigFile(plugin, name ,true);
+                ConfigFile file = new ConfigFile(plugin, name, true);
                 this.files.put(name, file.load());
             }
         }
 
         public void reloadFiles() {
-            for(ConfigFile file : files.values()) {
+            for (ConfigFile file : files.values()) {
                 file.reload();
             }
         }
@@ -133,6 +140,7 @@ public class PluginLib implements Initializer<PluginLib> {
             this.registerFile(PluginClass.getPlugin(), "config");
             this.registerFile(PluginClass.getPlugin(), "rewards");
         }
+
         public void setFolders() {
             this.playerdataFolder = new File(PluginClass.getPlugin().getDataFolder(), "playerdata");
             this.playerdataFolder.mkdirs();
@@ -141,12 +149,12 @@ public class PluginLib implements Initializer<PluginLib> {
 
         public void onDisable() {
             this.reloadFiles();
-            if(this.files != null) this.files.clear();
+            if (this.files != null) this.files.clear();
             this.files = null;
         }
 
         public void onReload() {
-            if(files != null) this.files.clear();
+            if (files != null) this.files.clear();
 
             this.onEnable();
         }

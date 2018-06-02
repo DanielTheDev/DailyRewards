@@ -39,7 +39,7 @@ public abstract class Gui extends BukkitRunnable implements InventoryHolder {
     }
 
     public void run() {
-        if(this.player != null && (!this.player.isOnline() || player.getOpenInventory() == null)) destroy();
+        if (this.player != null && (!this.player.isOnline() || player.getOpenInventory() == null)) destroy();
     }
 
     public void update() {
@@ -53,7 +53,7 @@ public abstract class Gui extends BukkitRunnable implements InventoryHolder {
     }
 
     public void open() {
-        if(timer) this.task = this.runTaskTimer(PluginClass.getPlugin(), delay, interval);
+        if (timer) this.task = this.runTaskTimer(PluginClass.getPlugin(), delay, interval);
         this.fill();
         this.player.openInventory(this.inventory);
         PluginClass.getPlugin().getPluginLib().getMenuManager().register(this);
@@ -98,13 +98,14 @@ public abstract class Gui extends BukkitRunnable implements InventoryHolder {
         try {
             this.task.cancel();
         } catch (NullPointerException ignored) {}
-            PluginClass.getPlugin().getPluginLib().getMenuManager().unregister(this);
-            this.inventory.clear();
-            Initializer.unload(this);
+        PluginClass.getPlugin().getPluginLib().getMenuManager().unregister(this);
+        this.inventory.clear();
+        Initializer.unload(this);
     }
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent e){}
+    public void onInventoryClick(InventoryClickEvent e) {
+    }
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent e) {
@@ -112,10 +113,12 @@ public abstract class Gui extends BukkitRunnable implements InventoryHolder {
     }
 
     @EventHandler
-    public void onInventoryOpen(InventoryOpenEvent e){}
+    public void onInventoryOpen(InventoryOpenEvent e) {
+    }
 
     @EventHandler
-    public void onInventoryDrag(InventoryDragEvent e){}
+    public void onInventoryDrag(InventoryDragEvent e) {
+    }
 
     @Override
     public Inventory getInventory() {
@@ -124,6 +127,6 @@ public abstract class Gui extends BukkitRunnable implements InventoryHolder {
 
     @Override
     public String toString() {
-        return "Gui{Type="+this.getClass().getSimpleName() + ", Player="+player.getName()+"}";
+        return "Gui{Type=" + this.getClass().getSimpleName() + ", Player=" + player.getName() + "}";
     }
 }

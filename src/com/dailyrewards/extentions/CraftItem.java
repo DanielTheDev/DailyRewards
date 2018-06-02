@@ -82,11 +82,11 @@ public class CraftItem {
         return this.item.getData();
     }
 
-    public ItemMeta getRawMeta(){
+    public ItemMeta getRawMeta() {
         return this.meta;
     }
 
-    public CraftItem setRawMeta(ItemMeta meta){
+    public CraftItem setRawMeta(ItemMeta meta) {
         this.item.setItemMeta(meta);
         return this;
     }
@@ -105,15 +105,13 @@ public class CraftItem {
     }
 
     public CraftItem setGlow(boolean glow) {
-        if(glow) {
+        if (glow) {
             this.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
             this.addFlag(ItemFlag.HIDE_ENCHANTS);
             this.glow = true;
         } else {
-            if(glow) {
-                this.removeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL);
-                this.removeFlag(ItemFlag.HIDE_ENCHANTS);
-            }
+            this.removeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL);
+            this.removeFlag(ItemFlag.HIDE_ENCHANTS);
         }
         return this.buildMeta();
     }
@@ -140,7 +138,7 @@ public class CraftItem {
 
 
     public CraftItem addEnchantments(Map<Enchantment, Integer> enchantments) {
-        for(Enchantment enchantment : enchantments.keySet()) {
+        for (Enchantment enchantment : enchantments.keySet()) {
             this.meta.addEnchant(enchantment, enchantments.get(enchantment), true);
         }
         return this.buildMeta();
@@ -169,7 +167,7 @@ public class CraftItem {
     }
 
     public CraftItem setDisplayName(String name) {
-        this.meta.setDisplayName(Chat.toColor("&r"+name));
+        this.meta.setDisplayName(Chat.toColor("&r" + name));
         return this.buildMeta();
     }
 
@@ -200,17 +198,19 @@ public class CraftItem {
     }
 
 
-
     public static CraftItem fromConfiguration(ConfigurationSection section) throws Exception {
         List<String> attributes = new ArrayList<>(section.getKeys(false));
         CraftItem item = new CraftItem();
-        if(attributes.contains("glow") && section.isBoolean("glow")) item.setGlow(section.getBoolean("glow"));
-        if(attributes.contains("material") && section.isString("material")) item.setType(Material.valueOf(section.getString("material")));
-        else throw new IOException(section.getCurrentPath()+".material value missing.");
-        if(attributes.contains("durability") && section.isInt("durability")) item.setDurability((short) section.getInt("durability"));
-        if(attributes.contains("amount") && section.isInt("amount")) item.setAmount(section.getInt("amount"));
-        if(attributes.contains("display-name") && section.isString("display-name")) item.setDisplayName(section.getString("display-name"));
-        if(attributes.contains("lore") && section.isList("lore")) item.setLore(section.getStringList("lore"));
+        if (attributes.contains("glow") && section.isBoolean("glow")) item.setGlow(section.getBoolean("glow"));
+        if (attributes.contains("material") && section.isString("material"))
+            item.setType(Material.valueOf(section.getString("material")));
+        else throw new IOException(section.getCurrentPath() + ".material value missing.");
+        if (attributes.contains("durability") && section.isInt("durability"))
+            item.setDurability((short) section.getInt("durability"));
+        if (attributes.contains("amount") && section.isInt("amount")) item.setAmount(section.getInt("amount"));
+        if (attributes.contains("display-name") && section.isString("display-name"))
+            item.setDisplayName(section.getString("display-name"));
+        if (attributes.contains("lore") && section.isList("lore")) item.setLore(section.getStringList("lore"));
         return item;
     }
 

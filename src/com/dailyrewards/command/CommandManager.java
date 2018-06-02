@@ -22,11 +22,11 @@ public class CommandManager implements CommandExecutor {
                 } else {
                     Chat.sendToConsole("You cannot do that, you must be in game to perform that.");
                 }
-            } else if (a.length > 0 && a[0].equalsIgnoreCase("reload")) {
+            } else if (a[0].equalsIgnoreCase("reload")) {
                 if (sender.hasPermission("dailyrewards.command.reload")) {
                     if (a.length == 1) {
 
-                        List<Gui> guis = PluginClass.getPlugin().getPluginLib().getMenuManager().open_guis;
+                        List<Gui> guis = PluginClass.getPlugin().getPluginLib().getMenuManager().getOpen_guis();
                         int haveOpen = 0;
 
                         for (int i = 0; i < guis.size(); i++) {

@@ -11,6 +11,7 @@ public class Events implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         PluginClass.getPlugin().getPluginLib().getPlayerDataManager().getPlayer(event.getPlayer()).update();
     }
+
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         PluginClass.getPlugin().getPluginLib().getPlayerDataManager().getPlayer(event.getPlayer()).update();

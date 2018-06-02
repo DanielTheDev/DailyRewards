@@ -64,7 +64,7 @@ public class PluginConfig implements Initializer<PluginConfig> {
         this.defaultValues = new LinkedHashMap<>();
         this.defaultValues.put("claim-delay-seconds", 86400);
         this.defaultValues.put("streak-reset-after-seconds", 129600);
-        this.defaultValues.put("daily-reward-available-message", Arrays.asList("&aHey &e%player%&a, Your daily reward is available now.","&aType &b/dailybonus &ato collect your bonus."));
+        this.defaultValues.put("daily-reward-available-message", Arrays.asList("&aHey &e%player%&a, Your daily reward is available now.", "&aType &b/dailybonus &ato collect your bonus."));
         this.defaultValues.put("reward-available-check-interval-seconds", 500);
         this.defaultValues.put("daily-reward-message-enabled", true);
         this.defaultValues.put("reward-finished-message", "&aCome back in &e24 hours &ato claim your next reward.");
@@ -72,7 +72,7 @@ public class PluginConfig implements Initializer<PluginConfig> {
 
     private Object getValue(String path) {
         Object value = this.file.getValue(path);
-        if(value == null) {
+        if (value == null) {
 
             this.file.setValue(path, this.defaultValues.get(path));
             return this.defaultValues.get(path);

@@ -36,7 +36,7 @@ public class RewardItem {
     }
 
     public void updateTrails(Inventory inventory) {
-        if(this.trails.size() > 1) {
+        if (this.trails.size() > 1) {
             inventory.setItem(this.trails.get(0), null);
             this.trails.remove(0);
         }
@@ -50,7 +50,7 @@ public class RewardItem {
         isOpened = opened;
     }
 
-    public List<int[]> getPaths(){
+    public List<int[]> getPaths() {
         return this.paths;
     }
 
@@ -59,40 +59,40 @@ public class RewardItem {
     }
 
     public boolean hasArrived_X() {
-        return x==destination_x;
+        return x == destination_x;
     }
 
     public boolean hasArrived_Y() {
-        return y==destination_y;
+        return y == destination_y;
     }
 
     public int getRemainingX() {
-        return Math.abs(destination_x-x);
+        return Math.abs(destination_x - x);
     }
 
     public int getRemainingY() {
-        return Math.abs(destination_y-y);
+        return Math.abs(destination_y - y);
     }
 
     public int getRemainingTypeX() {
-        return (destination_x-x) < 0 ? -1 : 1;
+        return (destination_x - x) < 0 ? -1 : 1;
     }
 
     public int getRemainingTypeY() {
-        return (destination_y-y) < 0 ? -1 : 1;
+        return (destination_y - y) < 0 ? -1 : 1;
     }
 
     public void moveX(int add) {
-        this.x+=add;
+        this.x += add;
     }
 
     public void moveY(int add) {
-        this.y+=add;
+        this.y += add;
     }
 
     public void teleport(int x, int y) {
-        this.x=x;
-        this.y=y;
+        this.x = x;
+        this.y = y;
     }
 
     public RewardConfig.Present getPresent() {

@@ -1,7 +1,6 @@
 package com.dailyrewards.config;
 
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
@@ -21,35 +20,34 @@ public class ConfigFile {
 
 
     public ConfigFile(Plugin plugin, String name, boolean fromJar) {
-        if(name.endsWith(".yml")) try {
+        if (name.endsWith(".yml")) try {
             throw new IOException("File cannot contain extension. (Only name required)");
         } catch (IOException e) {
             e.printStackTrace();
-        } else {
+        }
+        else {
             this.fromJar = fromJar;
             this.name = name;
-            this.file = new File(plugin.getDataFolder(), name+".yml");
+            this.file = new File(plugin.getDataFolder(), name + ".yml");
         }
     }
 
     public ConfigFile(Plugin plugin, File file) {
-        if(!file.getName().endsWith(".yml")) try {
+        if (!file.getName().endsWith(".yml")) try {
             throw new IOException("File must be yml file");
         } catch (IOException e) {
             e.printStackTrace();
-        } else {
+        }
+        else {
             this.fromJar = false;
             this.name = file.getName().replace(".yml", "");
             this.file = file;
         }
     }
 
-
     public static ConfigFile getFile(Plugin plugin, String name) {
-       return new ConfigFile(plugin, name, false);
+        return new ConfigFile(plugin, name, false);
     }
-
-
 
     public boolean isFromJar() {
         return fromJar;
@@ -61,25 +59,6 @@ public class ConfigFile {
 
     public YamlConfiguration getConfig() {
         return this.config;
-    }
-
-    public ConfigFile load() {
-        config = new YamlConfiguration();
-        try {
-            boolean safe = true;
-            if (!this.file.exists()) {
-                this.file.getParentFile().mkdirs();
-                if(fromJar) {
-                    safe = this.writeToFile(this.file.getName(), this.file);
-                } else {
-                   this.file.createNewFile();
-                }
-            }
-            if(safe)this.loadConfig();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return this;
     }
 
     public ConfigurationSection getConfigurationSection(String path) {
@@ -104,17 +83,9 @@ public class ConfigFile {
         this.save();
     }
 
-    private void loadConfig() throws IOException, InvalidConfigurationException {
-        if(this.config == null) {
-            throw new NullPointerException("Error Could not load " + file.getAbsolutePath());
-        } else {
-            this.config.load(this.file);
-        }
-    }
-
     public void clear() {
-        for(String key : this.config.getKeys(false)){
-            getConfig().set(key,null);
+        for (String key : this.config.getKeys(false)) {
+            getConfig().set(key, null);
         }
         this.save();
     }
@@ -125,12 +96,7 @@ public class ConfigFile {
     }
 
     public boolean delete() {
-        try{
-            this.file.delete();
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        return this.file.delete();
     }
 
     public void save() {
@@ -141,20 +107,45 @@ public class ConfigFile {
         }
     }
 
+    public ConfigFile load() {
+        config = new YamlConfiguration();
+        try {
+            boolean safe = true;
+            if (!this.file.exists()) {
+                this.file.getParentFile().mkdirs();
+                if (fromJar) {
+                    safe = this.writeToFile(this.file.getName(), this.file);
+                } else {
+                    this.file.createNewFile();
+                }
+            }
+            if (safe) {
+                if (this.config == null) {
+                    throw new NullPointerException("Error Could not load " + file.getAbsolutePath());
+                } else {
+                    this.config.load(this.file);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
+
 
     private boolean writeToFile(String source, File destination) {
         InputStream is = null;
         FileOutputStream os = null;
         try {
             is = this.getResource(source);
-            if(is == null) {
+            if (is == null) {
                 throw new IOException("Cannot find " + name + ".yml inside the plugin jar.");
             }
             os = new FileOutputStream(destination);
 
             byte[] buffer = new byte[1024];
             int i;
-            while((i = is.read(buffer)) != -1) {
+            while ((i = is.read(buffer)) != -1) {
                 os.write(buffer, 0, i);
             }
 

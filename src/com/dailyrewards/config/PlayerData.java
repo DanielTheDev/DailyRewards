@@ -27,12 +27,14 @@ public class PlayerData implements ConfigurationSerializable {
     }
 
     public PlayerData(Map<String, Object> data) {
-       this.uuid = UUID.fromString((String) data.get("uuid"));
-       this.claimStreak = (int) data.get("claim-streak");
-       this.totalClaimed = (int) data.get("total-claimed");
+        this.uuid = UUID.fromString((String) data.get("uuid"));
+        this.claimStreak = (int) data.get("claim-streak");
+        this.totalClaimed = (int) data.get("total-claimed");
         try {
-            if(!data.get("last-claimed").equals("none")) this.lastClaimed = this.timeformat.parse((String) data.get("last-claimed"));
-            if(!data.get("first-claimed").equals("none")) this.firstClaimed = this.timeformat.parse((String) data.get("first-claimed"));
+            if (!data.get("last-claimed").equals("none"))
+                this.lastClaimed = this.timeformat.parse((String) data.get("last-claimed"));
+            if (!data.get("first-claimed").equals("none"))
+                this.firstClaimed = this.timeformat.parse((String) data.get("first-claimed"));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -64,16 +66,16 @@ public class PlayerData implements ConfigurationSerializable {
     }
 
     public void addTotalClaimed(int add) {
-        this.totalClaimed+=add;
+        this.totalClaimed += add;
     }
 
     public void addClaimStreak(int add) {
-        this.totalClaimed+=add;
+        this.totalClaimed += add;
     }
 
     public boolean canClaim() {
-        if(this.hasLastClaimed()) {
-            return this.getLastClaimed().getTime()+(PluginClass.getPluginConfig().getDelay()*1000) < System.currentTimeMillis();
+        if (this.hasLastClaimed()) {
+            return this.getLastClaimed().getTime() + (PluginClass.getPluginConfig().getDelay() * 1000) < System.currentTimeMillis();
         } else return true;
     }
 
@@ -81,21 +83,21 @@ public class PlayerData implements ConfigurationSerializable {
         this.lastClaimed = new Date();
         this.totalClaimed++;
         this.claimStreak++;
-        if(this.firstClaimed == null) this.firstClaimed = new Date();
+        if (this.firstClaimed == null) this.firstClaimed = new Date();
 
         PluginClass.getPlugin().getPluginLib().getPlayerDataManager().update(this);
     }
 
     public int timeRemaining() {
-        if(!this.canClaim()) {
-            return (int)(((this.getLastClaimed().getTime()-System.currentTimeMillis())/1000)+(PluginClass.getPluginConfig().getDelay()));
+        if (!this.canClaim()) {
+            return (int) (((this.getLastClaimed().getTime() - System.currentTimeMillis()) / 1000) + (PluginClass.getPluginConfig().getDelay()));
         } else return 0;
     }
 
     public int streakTimeRemaining() {
-        if(this.lastClaimed != null) {
-            int remaining =  PluginClass.getPlugin().getPluginLib().getPluginConfig().getResetStreak()-((int)(System.currentTimeMillis()-this.lastClaimed.getTime())/1000);
-            if(remaining < 0) return 0;
+        if (this.lastClaimed != null) {
+            int remaining = PluginClass.getPlugin().getPluginLib().getPluginConfig().getResetStreak() - ((int) (System.currentTimeMillis() - this.lastClaimed.getTime()) / 1000);
+            if (remaining < 0) return 0;
             else return remaining;
         } else {
             return 0;
@@ -119,44 +121,44 @@ public class PlayerData implements ConfigurationSerializable {
     }
 
     public String getFirstClaimedFormat() {
-        if(this.firstClaimed == null) return "none";
+        if (this.firstClaimed == null) return "none";
         else return this.timeformat.format(this.firstClaimed);
     }
 
     public String getFirstClaimedRelative() {
-        return (lastClaimed != null ? Chat.timeTranslate((System.currentTimeMillis()-firstClaimed.getTime())/1000) + " ago" : "none");
+        return (lastClaimed != null ? Chat.timeTranslate((System.currentTimeMillis() - firstClaimed.getTime()) / 1000) + " ago" : "none");
     }
 
     public String getLastClaimedRelative() {
-        return (lastClaimed != null ? Chat.timeTranslate((System.currentTimeMillis()-lastClaimed.getTime())/1000) + " ago" : "none");
+        return (lastClaimed != null ? Chat.timeTranslate((System.currentTimeMillis() - lastClaimed.getTime()) / 1000) + " ago" : "none");
     }
 
     public String getLastClaimedFormat() {
-        if(this.lastClaimed == null) return "none";
+        if (this.lastClaimed == null) return "none";
         else return this.timeformat.format(this.lastClaimed);
     }
 
     public void update() {
-       if(this.streakTimeRemaining() == 0) this.claimStreak = 0;
+        if (this.streakTimeRemaining() == 0) this.claimStreak = 0;
     }
 
     public void setFirstClaimed(Date firstClaimed) {
         this.firstClaimed = firstClaimed;
     }
 
-    public boolean hasFirstClaimed(){
+    public boolean hasFirstClaimed() {
         return this.firstClaimed != null;
     }
 
-    public boolean hasLastClaimed(){
+    public boolean hasLastClaimed() {
         return this.lastClaimed != null;
     }
 
-    public static PlayerData deserialize(Map<String, Object> data){
+    public static PlayerData deserialize(Map<String, Object> data) {
         return new PlayerData(data);
     }
 
-    public static PlayerData valueOf(Map<String, Object> data){
+    public static PlayerData valueOf(Map<String, Object> data) {
         return new PlayerData(data);
     }
 

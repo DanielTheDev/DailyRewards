@@ -14,11 +14,13 @@ import java.util.TreeMap;
 public interface Initializer<T extends Initializer> {
 
     T onEnable();
+
     void onDisable();
+
     void onReload();
 
     static void unload(Object instance) {
-        for(Field field : instance.getClass().getDeclaredFields()) {
+        for (Field field : instance.getClass().getDeclaredFields()) {
             field.setAccessible(true);
             try {
                 field.set(instance, null);
@@ -31,7 +33,7 @@ public interface Initializer<T extends Initializer> {
     }
 
     static void init(Initializer.Action action, List<Initializer> listeners) {
-        init(action, listeners.toArray(new Initializer[listeners.size()]));
+        init(action, listeners.toArray(new Initializer[0]));
     }
 
     static void init(Initializer.Action action, Initializer... listener) {
@@ -57,14 +59,14 @@ public interface Initializer<T extends Initializer> {
     static List<Initializer> getInitializerFields(Object instance) {
         Map<Initializer, PluginLib.LoadPriority.Priority> list = new LinkedHashMap<>();
         Object object;
-        for(Field field : instance.getClass().getDeclaredFields()) {
+        for (Field field : instance.getClass().getDeclaredFields()) {
             field.setAccessible(true);
             try {
                 object = field.get(instance);
-                if(object instanceof Initializer) {
-                    if(field.isAnnotationPresent(PluginLib.LoadPriority.class)) {
-                        list.put((Initializer) object,field.getAnnotation(PluginLib.LoadPriority.class).priority());
-                    } else{
+                if (object instanceof Initializer) {
+                    if (field.isAnnotationPresent(PluginLib.LoadPriority.class)) {
+                        list.put((Initializer) object, field.getAnnotation(PluginLib.LoadPriority.class).priority());
+                    } else {
                         list.put((Initializer) object, PluginLib.LoadPriority.Priority.LOW);
                     }
                 }
@@ -94,6 +96,6 @@ public interface Initializer<T extends Initializer> {
     enum Action {
         ENABLE,
         DISABLE,
-        RELOAD;
+        RELOAD
     }
 }

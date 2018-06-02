@@ -6,7 +6,6 @@ import com.dailyrewards.extentions.Initializer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class RewardConfig implements Initializer<RewardConfig> {
 
@@ -21,24 +20,17 @@ public class RewardConfig implements Initializer<RewardConfig> {
         return presents;
     }
 
-    public ConfigFile getFile() {
-        return file;
-    }
-
     private void init() {
-        Set<String> rawpresents = this.file.getConfigurationSection("rewards").getKeys(false);
-
         String permission;
         List<String> rewards;
         CraftItem opened_item = null;
         CraftItem reward_item = null;
-
-        for(String present : rawpresents) {
-            permission = (String) this.getValue("rewards."+present+".permission");
-            rewards = (List<String>) this.getValue("rewards."+present+".reward-commands");
+        for (String present : this.file.getConfigurationSection("rewards").getKeys(false)) {
+            permission = (String) this.getValue("rewards." + present + ".permission");
+            rewards = (List<String>) this.getValue("rewards." + present + ".reward-commands");
             try {
-                reward_item = CraftItem.fromConfiguration(this.file.getConfigurationSection("rewards."+present+".reward-item"));
-                opened_item = CraftItem.fromConfiguration(this.file.getConfigurationSection("rewards."+present+".opened-item"));
+                reward_item = CraftItem.fromConfiguration(this.file.getConfigurationSection("rewards." + present + ".reward-item"));
+                opened_item = CraftItem.fromConfiguration(this.file.getConfigurationSection("rewards." + present + ".opened-item"));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -47,7 +39,7 @@ public class RewardConfig implements Initializer<RewardConfig> {
         }
     }
 
-    public Object getValue(String path){
+    public Object getValue(String path) {
         return this.file.getValue(path);
     }
 
@@ -59,7 +51,7 @@ public class RewardConfig implements Initializer<RewardConfig> {
 
     @Override
     public void onDisable() {
-        if(this.presents != null) this.presents.clear();
+        this.presents.clear();
     }
 
     @Override

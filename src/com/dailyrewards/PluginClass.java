@@ -9,7 +9,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,6 +33,7 @@ public class PluginClass extends JavaPlugin {
     public PluginLib getPluginLib() {
         return this.pluginLib;
     }
+
     public static PluginConfig getPluginConfig() {
         return plugin.getPluginLib().getPluginConfig();
     }
@@ -68,11 +68,11 @@ public class PluginClass extends JavaPlugin {
 
     public boolean reload() {
         try {
-            List<Gui> guis = PluginClass.getPlugin().getPluginLib().getMenuManager().open_guis;
+            List<Gui> guis = PluginClass.getPlugin().getPluginLib().getMenuManager().getOpen_guis();
             Player player;
             for (int i = 0; i < guis.size(); i++) {
-               player = guis.get(i).getPlayer();
-               player.closeInventory();
+                player = guis.get(i).getPlayer();
+                player.closeInventory();
                 Chat.sendMessage(player, "&7Sorry, your reward has canceled by the plugin reload.");
             }
             this.init(Initializer.Action.RELOAD);
@@ -83,7 +83,7 @@ public class PluginClass extends JavaPlugin {
     }
 
     public void registerInitializer(Initializer listener) {
-        if(this.initializers.contains(listener)) {
+        if (this.initializers.contains(listener)) {
             try {
                 throw new IOException("Initializer already exists.");
             } catch (IOException e) {
@@ -100,13 +100,12 @@ public class PluginClass extends JavaPlugin {
     }
 
 
-
     public void registerSerializableObject() {
         ConfigurationSerialization.registerClass(PlayerData.class);
     }
 
     public void setPlugin(boolean load) {
-        if(load) plugin = this;
+        if (load) plugin = this;
         else plugin = null;
     }
 }
