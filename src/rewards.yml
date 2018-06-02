@@ -1,3 +1,7 @@
+#########################################
+# MAX PRESENTS IS 10 AND CANNOT BE MORE #
+#########################################
+
 rewards:
   vortex_present:
     permission: dailyreward.present.vortex

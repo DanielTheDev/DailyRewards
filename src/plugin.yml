@@ -3,6 +3,7 @@ main: com.dailyrewards.PluginClass
 description: reward players every day for their activity.
 version: 1.0.1
 prefix: DailyRewards
+author: DanielTheDev
 commands:
  dailyreward:
   description: main command

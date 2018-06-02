@@ -196,7 +196,7 @@ public class RewardGui extends Gui {
     }
 
     private void addPresent(RewardConfig.Present present) throws IOException {
-        if (this.items.size() > 7) throw new IOException("Cannot add more presents, max: 8");
+        if (this.items.size() > 9) throw new IOException("Cannot add more presents, max: 10");
         int[] destination = createDestination();
         int destX = destination[0];
         int destY = destination[1];
