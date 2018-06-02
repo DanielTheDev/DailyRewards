@@ -2,10 +2,14 @@ package com.dailyrewards;
 
 import com.dailyrewards.config.PlayerData;
 import com.dailyrewards.config.PluginConfig;
+import com.dailyrewards.extentions.Chat;
+import com.dailyrewards.extentions.Gui;
 import com.dailyrewards.extentions.Initializer;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,6 +26,10 @@ public class PluginClass extends JavaPlugin {
         return plugin;
     }
 
+    public static String getVersion() {
+        return getPlugin().getDescription().getVersion();
+    }
+
 
     public PluginLib getPluginLib() {
         return this.pluginLib;
@@ -34,7 +42,7 @@ public class PluginClass extends JavaPlugin {
     public void onEnable() {
         this.setPlugin(true);
         this.initializers = new ArrayList<>();
-        this.registerInitializer(this.pluginLib = new PluginLib());
+        this.registerInitializer(this.pluginLib = new PluginLib().init());
         this.init(Initializer.Action.ENABLE);
         this.registerListeners();
         this.registerSerializableObject();
@@ -56,6 +64,22 @@ public class PluginClass extends JavaPlugin {
         this.initializers = null;
         this.pluginLib = null;
         this.setPlugin(false);
+    }
+
+    public boolean reload() {
+        try {
+            List<Gui> guis = PluginClass.getPlugin().getPluginLib().getMenuManager().open_guis;
+            Player player;
+            for (int i = 0; i < guis.size(); i++) {
+               player = guis.get(i).getPlayer();
+               player.closeInventory();
+                Chat.sendMessage(player, "&7Sorry, your reward has canceled by the plugin reload.");
+            }
+            this.init(Initializer.Action.RELOAD);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     public void registerInitializer(Initializer listener) {

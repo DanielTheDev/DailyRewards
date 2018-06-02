@@ -1,6 +1,5 @@
 package com.dailyrewards.config;
 
-import com.dailyrewards.PluginClass;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;

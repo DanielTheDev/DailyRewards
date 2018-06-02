@@ -124,7 +124,7 @@ public class PlayerData implements ConfigurationSerializable {
     }
 
     public String getFirstClaimedRelative() {
-        return (lastClaimed != null ? Chat.timeTranslate((System.currentTimeMillis()-lastClaimed.getTime())/1000) + " ago" : "none");
+        return (lastClaimed != null ? Chat.timeTranslate((System.currentTimeMillis()-firstClaimed.getTime())/1000) + " ago" : "none");
     }
 
     public String getLastClaimedRelative() {

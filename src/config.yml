@@ -1,6 +1,8 @@
 claim-delay-seconds: 86400
+
 streak-reset-after-seconds: 129600
 reward-finished-message: '&aCome back in &e24 hours &ato claim your next reward.'
+reward-available-check-interval-seconds: 1000
 daily-reward-available-message:
 - '&aHey &e%player%&a, Your daily reward is available now.'
 - '&aType &b/dailybonus &ato collect your bonus.'
@@ -12,12 +14,12 @@ reward-animation-present-trail:
   durability: 0
   glow: false
 reward-animation-present-wrapped:
-  material: END_CRYSTAL
+  material: STORAGE_MINECART
   display-name: "&5?????"
   amount: 1
   durability: 0
   glow: true
-reward-available-check-interval-seconds: 500
+
 
 # 1 = 1 second
 # 60 = 1 minute
@@ -28,3 +30,5 @@ reward-available-check-interval-seconds: 500
 
 # /db reload
 # dailyrewards.command.reload
+# /db
+# dailyrewards.command.dailyrewards

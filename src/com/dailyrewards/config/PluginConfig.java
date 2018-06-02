@@ -6,7 +6,6 @@ import com.dailyrewards.extentions.Initializer;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -14,8 +13,7 @@ import java.util.List;
 
 public class PluginConfig implements Initializer<PluginConfig> {
 
-
-    private final LinkedHashMap<String, Object> defaultValues;
+    private LinkedHashMap<String, Object> defaultValues;
     private int delay;
     private int resetStreak;
     private List<String> rewardMessage;
@@ -59,6 +57,10 @@ public class PluginConfig implements Initializer<PluginConfig> {
     }
 
     public PluginConfig() {
+        this.preinit();
+    }
+
+    private void preinit() {
         this.defaultValues = new LinkedHashMap<>();
         this.defaultValues.put("claim-delay-seconds", 86400);
         this.defaultValues.put("streak-reset-after-seconds", 129600);

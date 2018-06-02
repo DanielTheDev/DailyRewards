@@ -30,13 +30,13 @@ public class RewardItem {
     }
 
 
-    public synchronized void addTrail(Inventory inventory, int slot, ItemStack trail) {
+    public void addTrail(Inventory inventory, int slot, ItemStack trail) {
         this.trails.add(slot);
         inventory.setItem(slot, trail);
     }
 
-    public synchronized void updateTrails(Inventory inventory) {
-        if(this.trails.size() > 0) {
+    public void updateTrails(Inventory inventory) {
+        if(this.trails.size() > 1) {
             inventory.setItem(this.trails.get(0), null);
             this.trails.remove(0);
         }

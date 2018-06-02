@@ -49,7 +49,16 @@ public class PluginLib implements Initializer<PluginLib> {
         return playerDataManager;
     }
 
+    public NotifyTimer getNotifyTimer() {
+        return notifyTimer;
+    }
+
     public PluginLib onEnable() {
+        Initializer.init(Action.ENABLE, Initializer.getInitializerFields(this));
+        return this;
+    }
+
+    public PluginLib init() {
         this.playerDataManager = new PlayerDataManager();
         this.commandManager = new CommandManager();
         this.menuManager = new MenuManager();
@@ -57,7 +66,6 @@ public class PluginLib implements Initializer<PluginLib> {
         this.pluginConfig = new PluginConfig();
         this.rewardConfig = new RewardConfig();
         this.notifyTimer = new NotifyTimer();
-        Initializer.init(Action.ENABLE, Initializer.getInitializerFields(this));
         return this;
     }
 
@@ -67,8 +75,7 @@ public class PluginLib implements Initializer<PluginLib> {
     }
 
     public void onReload() {
-        this.onDisable();
-        this.onEnable();
+        Initializer.init(Action.RELOAD, Initializer.getInitializerFields(this));
     }
 
     public RewardConfig getRewardConfig() {
@@ -140,7 +147,8 @@ public class PluginLib implements Initializer<PluginLib> {
 
         public void onReload() {
             if(files != null) this.files.clear();
-            else this.onEnable();
+
+            this.onEnable();
         }
     }
 

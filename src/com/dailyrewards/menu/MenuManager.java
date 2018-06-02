@@ -69,12 +69,15 @@ public class MenuManager implements Initializer<MenuManager>, Listener {
     }
 
     public void open(Gui gui) {
-        gui.open();
+        if(!this.hasGuiOpen(gui.getPlayer())) gui.open();
     }
 
     public void switchTo(Gui gui) {
-        gui.getPlayer().closeInventory();
-        gui.open();
+        Gui oldGui = this.getOpenGui(gui.getPlayer());
+        if(oldGui != null && oldGui.getClass() != gui.getClass()) {
+            gui.getPlayer().closeInventory();
+            gui.open();
+        }
     }
 
     public synchronized void unregister(Gui gui) {

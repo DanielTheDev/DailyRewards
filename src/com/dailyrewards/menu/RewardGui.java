@@ -4,6 +4,7 @@ import com.dailyrewards.PluginClass;
 import com.dailyrewards.config.RewardConfig;
 import com.dailyrewards.extentions.Chat;
 import com.dailyrewards.extentions.Gui;
+import com.dailyrewards.extentions.Initializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -110,6 +111,7 @@ public class RewardGui extends Gui {
                     item = items.get(x);
                     setItem(item);
                     item.destroy();
+                    item = null;
                     player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, (float) 1);
                 } else {
                     this.cancel();
@@ -128,8 +130,8 @@ public class RewardGui extends Gui {
             oldLocation = new int[]{item.getX(), item.getY()};
             while(!item.hasArrived()) {
 
-                int xStep = manager.random(1, 3);
-                int yStep = manager.random(1, 2);
+                int xStep = manager.random(1, 2);
+                int yStep = manager.random(1, 3);
 
                 int xRemaining = item.getRemainingX();
                 int yRemaining = item.getRemainingY();
@@ -246,6 +248,7 @@ public class RewardGui extends Gui {
     @Override
     public void destroy() {
         this.items.clear();
+        Initializer.unload(this);
         super.destroy();
     }
 
@@ -256,6 +259,8 @@ public class RewardGui extends Gui {
 
     @Override
     public void onInventoryClick(InventoryClickEvent e) {
+        player.updateInventory();
+        e.setCancelled(true);
         if(isReady) {
             for(RewardItem item : items) {
                 if(e.getRawSlot() == manager.getSlot(item.getX(), item.getY()) && !item.isOpened()) {
@@ -263,7 +268,6 @@ public class RewardGui extends Gui {
                 }
             }
         }
-        e.setCancelled(true);
     }
 
     @Override
@@ -273,8 +277,10 @@ public class RewardGui extends Gui {
 
     @Override
     public void onInventoryClose(InventoryCloseEvent e) {
-        this.items.clear();
         if(this.animation != null) this.animation.cancel();
+        if(!this.hasOpenedAllPresents()) {
+            e.getPlayer().sendMessage(Chat.toColor("&7Oops, you forgot to claim all your presents."));
+        }
         super.onInventoryClose(e);
     }
 

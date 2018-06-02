@@ -15,9 +15,11 @@ public class NotifyTimer extends BukkitRunnable implements Initializer<NotifyTim
     private PlayerDataManager dataManager;
 
     public void run() {
-        for(Player player : Bukkit.getOnlinePlayers()) {
-            this.check(player);
-        }
+        try {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                this.check(player);
+            }
+        } catch (Exception ignore) {}
     }
 
     public void check(Player player) {
@@ -45,8 +47,5 @@ public class NotifyTimer extends BukkitRunnable implements Initializer<NotifyTim
     }
 
     @Override
-    public void onReload() {
-        this.onDisable();
-        this.onEnable();
-    }
+    public void onReload() {}
 }
