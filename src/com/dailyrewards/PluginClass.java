@@ -5,6 +5,7 @@ import com.dailyrewards.config.PluginConfig;
 import com.dailyrewards.extentions.Chat;
 import com.dailyrewards.extentions.Gui;
 import com.dailyrewards.extentions.Initializer;
+import com.dailyrewards.menu.MainGui;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
@@ -28,7 +29,6 @@ public class PluginClass extends JavaPlugin {
     public static String getVersion() {
         return getPlugin().getDescription().getVersion();
     }
-
 
     public PluginLib getPluginLib() {
         return this.pluginLib;

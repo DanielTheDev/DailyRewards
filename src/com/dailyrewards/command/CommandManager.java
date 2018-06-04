@@ -15,6 +15,7 @@ public class CommandManager implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] a) {
+
         if (sender.hasPermission("dailyrewards.command.dailyrewards")) {
             if (a.length == 0) {
                 if (sender instanceof Player) {

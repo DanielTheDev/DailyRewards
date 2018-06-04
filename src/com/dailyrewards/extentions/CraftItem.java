@@ -1,5 +1,6 @@
 package com.dailyrewards.extentions;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
@@ -26,7 +27,7 @@ public class CraftItem {
     }
 
     public CraftItem() {
-        this(Material.STONE, 1);
+        this(Material.STONE);
     }
 
     public CraftItem(Material material) {
@@ -62,7 +63,7 @@ public class CraftItem {
         return this.item.getMaxStackSize();
     }
 
-    public int getEnchantmentLevel(Enchantment enchantment) {
+    public int getEnchantmentLevel(final Enchantment enchantment) {
         return this.item.getEnchantmentLevel(enchantment);
     }
 
@@ -86,110 +87,108 @@ public class CraftItem {
         return this.meta;
     }
 
-    public CraftItem setRawMeta(ItemMeta meta) {
+    public CraftItem setRawMeta(final ItemMeta meta) {
         this.item.setItemMeta(meta);
         return this;
     }
 
-    public boolean hasEnchantment(Enchantment enchantment) {
+    public boolean hasEnchantment(final Enchantment enchantment) {
         return this.item.containsEnchantment(enchantment);
     }
 
-    public boolean hasFlag(ItemFlag flag) {
+    public boolean hasFlag(final ItemFlag flag) {
         return this.meta.hasItemFlag(flag);
     }
 
-    public CraftItem setData(MaterialData data) {
+    public CraftItem setData(final MaterialData data) {
         this.item.setData(data);
         return this;
     }
 
-    public CraftItem setGlow(boolean glow) {
+    public CraftItem setGlow(final boolean glow) {
         if (glow) {
             this.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
             this.addFlag(ItemFlag.HIDE_ENCHANTS);
-            this.glow = true;
         } else {
             this.removeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL);
             this.removeFlag(ItemFlag.HIDE_ENCHANTS);
         }
-        return this.buildMeta();
+        this.glow = glow;
+        return this;
     }
 
-    public CraftItem setType(Material type) {
+    public CraftItem setType(final Material type) {
         this.item.setType(type);
         return this;
     }
 
-    public CraftItem setDurability(short durability) {
+    public CraftItem setDurability(final short durability) {
         this.item.setDurability(durability);
         return this;
     }
 
-    public CraftItem setAmount(int amount) {
+    public CraftItem setAmount(final int amount) {
         this.item.setAmount(amount);
         return this;
     }
 
-    public CraftItem addEnchantment(Enchantment enchantment, int level) {
-        this.meta.addEnchant(enchantment, level, true);
-        return this.buildMeta();
-    }
-
-
-    public CraftItem addEnchantments(Map<Enchantment, Integer> enchantments) {
-        for (Enchantment enchantment : enchantments.keySet()) {
-            this.meta.addEnchant(enchantment, enchantments.get(enchantment), true);
-        }
-        return this.buildMeta();
-    }
-
-    public CraftItem removeFlag(ItemFlag... flags) {
-        this.meta.removeItemFlags(flags);
-        return this.buildMeta();
-    }
-
-
-    public CraftItem removeEnchantment(Enchantment enchantment) {
-        this.meta.removeEnchant(enchantment);
-        return this.buildMeta();
-    }
-
-    public CraftItem addFlag(ItemFlag... flags) {
-        this.meta.addItemFlags(flags);
-        this.buildMeta();
+    public CraftItem addEnchantment(final Enchantment enchantment, final int level) {
+        meta.addEnchant(enchantment, level, true);
         return this;
     }
 
 
+    public CraftItem addEnchantments(final Map<Enchantment, Integer> enchantments) {
+        for (Enchantment enchantment : enchantments.keySet()) {
+            this.meta.addEnchant(enchantment, enchantments.get(enchantment), true);
+        }
+        return this;
+    }
+
+    public CraftItem removeFlag(final ItemFlag... flags) {
+        this.meta.removeItemFlags(flags);
+        return this;
+    }
+
+
+    public CraftItem removeEnchantment(final Enchantment enchantment) {
+        this.meta.removeEnchant(enchantment);
+        return this;
+    }
+
+    public CraftItem addFlag(final ItemFlag... flags) {
+        this.meta.addItemFlags(flags);
+        return this;
+    }
+
+    public CraftItem setDisplayName(final String name) {
+        this.meta.setDisplayName(Chat.toColor("&r" + name));
+        return this;
+    }
+
+    public CraftItem setLocalizedName(final String name) {
+        this.meta.setLocalizedName(Chat.toColor(name));
+        return this;
+    }
+
+
+    public CraftItem setUnbreakable(final boolean unbreakable) {
+        this.meta.setUnbreakable(unbreakable);
+        return this;
+    }
+
+    public CraftItem setLore(final List<String> text) {
+        this.meta.setLore(Chat.toColor(text, true));
+        return this;
+    }
+
+    public CraftItem setLore(final String... text) {
+        this.meta.setLore(Chat.toColor(true, text));
+        return this;
+    }
+
     public ItemStack build() {
         return this.buildMeta().item;
-    }
-
-    public CraftItem setDisplayName(String name) {
-        this.meta.setDisplayName(Chat.toColor("&r" + name));
-        return this.buildMeta();
-    }
-
-    public CraftItem setLocalizedName(String name) {
-        this.meta.setLocalizedName(Chat.toColor(name));
-        return this.buildMeta();
-    }
-
-
-    public CraftItem setUnbreakable(boolean unbreakable) {
-        this.meta.setUnbreakable(unbreakable);
-        return this.buildMeta();
-    }
-
-    public CraftItem setLore(List<String> text) {
-        this.meta.setLore(Chat.toColor(text, true));
-        return this.buildMeta();
-    }
-
-    public CraftItem setLore(String... text) {
-        this.meta.setLore(Chat.toColor(true, text));
-        return this.buildMeta();
     }
 
     private CraftItem buildMeta() {
@@ -197,8 +196,7 @@ public class CraftItem {
         return this;
     }
 
-
-    public static CraftItem fromConfiguration(ConfigurationSection section) throws Exception {
+    public static CraftItem fromConfiguration(final ConfigurationSection section) throws Exception {
         List<String> attributes = new ArrayList<>(section.getKeys(false));
         CraftItem item = new CraftItem();
         if (attributes.contains("glow") && section.isBoolean("glow")) item.setGlow(section.getBoolean("glow"));

@@ -20,8 +20,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.concurrent.ThreadLocalRandom;
 
 
-public final class MainGui extends Gui {
-
+public class MainGui extends Gui {
 
     private int loading = 0;
     private final PlayerData data;
@@ -53,11 +52,11 @@ public final class MainGui extends Gui {
             inventory.setItem(13, item.setDisplayName("Loading " + Chat.percentText("▌", 10, (int) (loading / 1.5), '5', 'd') + "&f " + ((16 - loading) / 10.0) + " seconds").build());
         }
 
-
         for (int place = 0; place < this.getSize(); place++) {
             if (!(place == 13 || place == 22))
                 inventory.setItem(place, deco_1.setDurability((short) (place > 9 && place < 17 ? 6 : 2)).setDisplayName("&a").build());
         }
+
         for (int place : new int[]{0, 8, 18, 26}) {
             inventory.setItem(place, deco_2.setDurability((short) (loading > 0 && loading < 16 ? ThreadLocalRandom.current().nextInt(8) : 10)).setGlow(true).setDisplayName("&a").build());
         }
@@ -118,6 +117,7 @@ public final class MainGui extends Gui {
     public void run() {
         this.data.update();
         this.update();
+        super.run();
     }
 
     public void claimAnimation() {

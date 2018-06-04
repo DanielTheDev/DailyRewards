@@ -55,7 +55,7 @@ public abstract class Gui extends BukkitRunnable implements InventoryHolder {
     public void open() {
         if (timer) this.task = this.runTaskTimer(PluginClass.getPlugin(), delay, interval);
         this.fill();
-        this.player.openInventory(this.inventory);
+        player.openInventory(inventory);
         PluginClass.getPlugin().getPluginLib().getMenuManager().register(this);
     }
 
