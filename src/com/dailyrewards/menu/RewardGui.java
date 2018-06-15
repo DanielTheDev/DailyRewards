@@ -231,7 +231,6 @@ public class RewardGui extends Gui {
         for (String command : item.getPresent().getRewards()) {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Chat.placeholder(player, command));
         }
-        item.getPresent().destroy();
 
         if (hasOpenedAllPresents()) {
             new BukkitRunnable() {
