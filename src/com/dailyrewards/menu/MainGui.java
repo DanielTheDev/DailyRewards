@@ -24,6 +24,7 @@ public class MainGui extends Gui {
 
     private int loading = 0;
     private final PlayerData data;
+    private final char symbol = '\u258C';
     private CraftItem skull = new CraftItem(Material.SKULL_ITEM, 1, (short) 3).setDisplayName("&7Loading stats...");
     private final CraftItem item = new CraftItem(Material.EYE_OF_ENDER);
     private final CraftItem deco_1 = new CraftItem(Material.STAINED_GLASS_PANE);
@@ -49,7 +50,7 @@ public class MainGui extends Gui {
         if (!this.opening) inventory.setItem(13, getChest());
         else {
             if (loading != 16) loading += 1;
-            inventory.setItem(13, item.setDisplayName("Loading " + Chat.percentText("▌", 10, (int) (loading / 1.5), '5', 'd') + "&f " + ((16 - loading) / 10.0) + " seconds").build());
+            inventory.setItem(13, item.setDisplayName("Loading " + Chat.percentText(symbol+"", 10, (int) (loading / 1.5), '5', 'd') + "&f " + ((16 - loading) / 10.0) + " seconds").build());
         }
 
         for (int place = 0; place < this.getSize(); place++) {
